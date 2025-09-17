@@ -153,3 +153,9 @@ Here is a typical workflow for a developer using PostgreSQL, which you can use a
 * **Command:** `ALTER TABLE users ADD COLUMN phone_number VARCHAR(20);`
 * **Goal:** Remove the database when your project is done.
 * **Command:** `DROP DATABASE [your_db_name];`
+
+----
+----
+----
+
+[Learn Prisma on Medium](https://medium.com/@kemaltf_/learn-prisma-81a019e90b4f)

@@ -1,103 +1,327 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [users, setUsers] = useState([]);
+  const [posts, setPosts] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // ================= USERS =================
+
+  const fetchUsers = async () => {
+    const res = await fetch("/api/user");
+    const data = await res.json();
+    console.log("Fetched Users:", data);
+    setUsers(data);
+  };
+
+  const handleUserCreate = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
+
+    const res = await fetch("/api/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+    console.log("Created User:", data);
+    fetchUsers();
+    e.target.reset();
+  };
+
+  const handleUserUpdate = async (id, e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
+    userData.id = id;
+
+    const res = await fetch("/api/user", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+    console.log("Updated User:", data);
+    fetchUsers();
+  };
+
+  const handleUserDelete = async (id) => {
+    await fetch("/api/user", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    fetchUsers();
+  };
+
+  // ================= POSTS =================
+
+  const fetchPosts = async () => {
+    const res = await fetch("/api/post");
+    const data = await res.json();
+    console.log("Fetched Posts:", data);
+    setPosts(data);
+  };
+
+  const handlePostCreate = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const postData = Object.fromEntries(formData.entries());
+
+    const res = await fetch("/api/post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    });
+    const data = await res.json();
+    console.log("Created Post:", data);
+    fetchPosts();
+    e.target.reset();
+  };
+
+  const handlePostUpdate = async (id, e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const postData = Object.fromEntries(formData.entries());
+    postData.id = id;
+
+    const res = await fetch("/api/post", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    });
+    const data = await res.json();
+    console.log("Updated Post:", data);
+    fetchPosts();
+  };
+
+  const handlePostDelete = async (id) => {
+    await fetch("/api/post", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    fetchPosts();
+  };
+
+  // ================= UI =================
+  return (
+    <div className="p-6 space-y-8">
+      {/* Create User */}
+      <div>
+        <h1 className="text-3xl font-bold underline mb-4">Create new User</h1>
+        <form onSubmit={handleUserCreate}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            className="border p-2 mb-2"
+            required
+          />
+          <br />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="border p-2 mb-2"
+            required
+          />
+          <br />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className="border p-2 mb-2"
+            required
+          />
+          <br />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white rounded-md px-4 py-2"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Create User
+          </button>
+        </form>
+      </div>
+
+      {/* Create Post */}
+      <div>
+        <h1 className="text-3xl font-bold underline mb-4">Create new Post</h1>
+        <form onSubmit={handlePostCreate}>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            className="border p-2 mb-2"
+            required
+          />
+          <br />
+          <textarea
+            name="content"
+            placeholder="Content"
+            className="border p-2 mb-2"
+            required
+          ></textarea>
+          <br />
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            className="border p-2 mb-2"
+          />
+          <br />
+          <input
+            type="text"
+            name="authorId"
+            placeholder="Author ID"
+            className="border p-2 mb-2"
+            required
+          />
+          <br />
+          <button
+            type="submit"
+            className="bg-green-500 text-white rounded-md px-4 py-2"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            Create Post
+          </button>
+        </form>
+      </div>
+
+      {/* Users Table */}
+      <div>
+        <h1 className="text-xl font-bold">All Users</h1>
+        <button
+          onClick={fetchUsers}
+          className="bg-purple-500 text-white rounded-md px-4 py-2 my-2"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Fetch Users
+        </button>
+
+        {users.length > 0 && (
+          <table className="border-collapse border w-full mt-4">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">ID</th>
+                <th className="border px-4 py-2">Name</th>
+                <th className="border px-4 py-2">Email</th>
+                <th className="border px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td className="border px-4 py-2">{u.id}</td>
+                  <td className="border px-4 py-2">{u.name}</td>
+                  <td className="border px-4 py-2">{u.email}</td>
+                  <td className="border px-4 py-2 space-x-2">
+                    {/* Update Form */}
+                    <form
+                      onSubmit={(e) => handleUserUpdate(u.id, e)}
+                      className="inline-block"
+                    >
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="New Name"
+                        className="border p-1 mr-2"
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="New Email"
+                        className="border p-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                      >
+                        Update
+                      </button>
+                    </form>
+                    {/* Delete */}
+                    <button
+                      onClick={() => handleUserDelete(u.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Posts Table */}
+      <div>
+        <h1 className="text-xl font-bold">All Posts</h1>
+        <button
+          onClick={fetchPosts}
+          className="bg-yellow-500 text-white rounded-md px-4 py-2 my-2"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Fetch Posts
+        </button>
+
+        {posts.length > 0 && (
+          <table className="border-collapse border w-full mt-4">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">ID</th>
+                <th className="border px-4 py-2">Title</th>
+                <th className="border px-4 py-2">Category</th>
+                <th className="border px-4 py-2">Author ID</th>
+                <th className="border px-4 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {posts.map((p) => (
+                <tr key={p.id}>
+                  <td className="border px-4 py-2">{p.id}</td>
+                  <td className="border px-4 py-2">{p.title}</td>
+                  <td className="border px-4 py-2">{p.category}</td>
+                  <td className="border px-4 py-2">{p.authorId}</td>
+                  <td className="border px-4 py-2 space-x-2">
+                    {/* Update Form */}
+                    <form
+                      onSubmit={(e) => handlePostUpdate(p.id, e)}
+                      className="inline-block"
+                    >
+                      <input
+                        type="text"
+                        name="title"
+                        placeholder="New Title"
+                        className="border p-1 mr-2"
+                      />
+                      <input
+                        type="text"
+                        name="category"
+                        placeholder="New Category"
+                        className="border p-1 mr-2"
+                      />
+                      <button
+                        type="submit"
+                        className="bg-green-500 text-white px-2 py-1 rounded"
+                      >
+                        Update
+                      </button>
+                    </form>
+                    {/* Delete */}
+                    <button
+                      onClick={() => handlePostDelete(p.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
