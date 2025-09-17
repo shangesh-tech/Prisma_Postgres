@@ -1,7 +1,5 @@
 # Prisma_Postgres
 
-Of course. Here is the complete workflow to create a new PostgreSQL container, connect to it, and create a new database, all from your terminal.
-
 -----
 
 ### 1\. Create a New PostgreSQL Container 🐳
@@ -56,6 +54,16 @@ You can verify that the new database was created by using the `\l` command.
 To exit the psql shell, type `\q` and press Enter. You'll be returned to your regular terminal prompt.
 
 ----
+----
+
+The correct Prisma connection string for your new `my_app_db` database is:
+
+```
+DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/my_app_db"
+```
+----
+----
+
 
 ## PostgreSQL Daily Commands 🛠️
 
