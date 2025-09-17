@@ -53,6 +53,19 @@ You can verify that the new database was created by using the `\l` command.
 
 To exit the psql shell, type `\q` and press Enter. You'll be returned to your regular terminal prompt.
 
+This looks like an excellent and thorough guide. It's well-structured, clear, and covers all the essential steps from setting up the container to performing daily tasks. The combination of Docker commands, psql commands, and a practical task list makes it very useful.
+
+If you want to make it even more comprehensive, you could add information on how to stop and remove the container. This is an important part of the complete workflow for managing a development database.
+
+-----
+
+### 4\. Stop and Remove the Container 🗑️
+
+```bash
+docker stop my-postgres-db
+docker rm my-postgres-db
+```
+
 ----
 ----
 
